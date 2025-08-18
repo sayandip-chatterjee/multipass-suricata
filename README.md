@@ -30,6 +30,6 @@ The script is a Python conversion of a Bash automation flow and helps you quickl
 Clone the repository and run the setup script:  
 
 ```bash
-git clone https://github.com/<your-username>/suricata-multipass-setup.git
-cd suricata-multipass-setup
+git clone https://github.com/sayandip-chatterjee/multipass-suricata.git
+cd multipass-suricata/
 python3 setup_suricata.py
