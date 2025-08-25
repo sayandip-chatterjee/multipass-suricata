@@ -33,3 +33,49 @@ Clone the repository and run the setup script:
 git clone https://github.com/sayandip-chatterjee/multipass-suricata.git
 cd multipass-suricata/
 python3 setup_suricata.py
+```
+ADDITIONAL NOTES:
+```
+sudo su
+cd /var/lib/suricata/rules
+
+after opening the directory you need to either create a new rule file or delete the suricata.rules file content and replace your own rules content.
+If you create a new rule file then make sure it is present in the suricata.yaml configuration file
+Then restart Suricata
+
+cd /etc/suricata/rules
+
+IMPORTANT COMMANDS:
+sudo tail -f /var/log/suricata/fast.log
+sudo tail -f /var/log/suricata/eve.json
+sudo tail -f /var/log/suricata/suricata.log
+sudo suricata -T -c /etc/suricata/suricata.yaml -v
+sudo systemctl start suricata.service
+sudo systemctl status suricata.service
+sudo systemctl stop suricata.service
+sudo kill -usr2 $(pidof suricata)"
+sudo nano /etc/suricata/suricata.yaml
+sudo scapy
+curl
+sudo nano /var/lib/suricata/rules/suricata.rules
+sudo nano /var/lib/suricata/rules/test.rules
+tcpdump or wireshark
+sudo python3 -m http.server 80
+
+For starting a HTTPS server: (IGNORE for NOW)
+
+1. Ruby-Script (I tested with Ruby 2.1.2.)
+
+sudo nano https.rb
+
+ruby -r webrick/https -e '
+  WEBrick::HTTPServer.new(
+    Port: 8000, DocumentRoot: ".",
+    SSLEnable: true, SSLCertName: [%w[CN localhost]]).start'
+
+sudo chmod 777 https.rb
+
+./https.rb
+
+https://localhost:8000
+```
