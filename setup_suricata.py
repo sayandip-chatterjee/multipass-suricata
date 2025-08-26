@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 
-import os, subprocess
+import os, subprocess, time, sys
+
+def progress_bar(duration, prefix="Progress", length=30):
+    """
+    Displays a progress bar in the terminal.
+    
+    :param duration: total time in seconds for the progress bar
+    :param prefix: text before the progress bar
+    :param length: length of the bar in characters
+    """
+    for i in range(length + 1):
+        percent = i / length
+        bar = "#" * i + "-" * (length - i)
+        sys.stdout.write(f"\r{prefix}: [{bar}] {percent*100:.0f}%")
+        sys.stdout.flush()
+        time.sleep(duration / length)
+    print()
 
 def wait_for_enter(message="Press ENTER to continue..."):
     input(f"\033[1;33m{message}\033[0m")
@@ -84,19 +100,20 @@ def main():
 
     run(f"multipass exec {vmname} -- sudo systemctl start suricata.service")
     run(f"multipass exec {vmname} -- sudo systemctl status suricata.service")
-
-    run(f"multipass exec {vmname} -- sudo apt install -y jq")
-    wait_for_enter("Press ENTER to continue...")
+    progress_bar(60, prefix="Waiting for Suricata to initialize...")
 
     run(f"multipass exec {vmname} -- curl http://testmynids.org/uid/index.html")
 
     wait_for_enter("Press ENTER to continue...")
-    run(f"multipass exec {vmname} -- sudo grep 2100498 /var/log/suricata/fast.log")
+    run(f"multipass exec {vmname} -- sudo grep 2100498 /var/log/suricata/fast.log", check=False)
     wait_for_enter("Press ENTER to continue...")
-    run(f"multipass exec {vmname} -- sudo jq 'select(.alert .signature_id==2100498)' /var/log/suricata/eve.json")
+    run(f"multipass exec {vmname} -- sudo jq 'select(.alert .signature_id==2100498)' /var/log/suricata/eve.json", check=False)
     wait_for_enter("Press ENTER to continue...")
 
     print("\n\033[1;31mIf you can visualize alerts in both fast.log and eve.json, Suricata setup was successful!\033[0m")
+    wait_for_enter("Press ENTER to continue...")
+
+    print("\n\033[1;31mIf you CANNOT visualize alerts in both fast.log and eve.json, Suricata setup FAILED! So exec into your vm and then run the curl command used here in line 87 and check for the log in fast.log and eve.json\033[0m")
     wait_for_enter("Press ENTER to continue...")
     print("\n\033[1;33mNow starting a shell session with your VM... Let's go!\033[0m")
     wait_for_enter("Press ENTER to continue...")
