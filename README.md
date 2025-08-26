@@ -48,4 +48,7 @@ ADDITIONAL NOTES:
 | Editing / adding rules | After opening `/var/lib/suricata/rules`, either create a new rule file or delete `suricata.rules` content and replace with your own rules. Ensure the file is referenced in `suricata.yaml`, then restart Suricata. |
 
 
+Test
+
+
 
