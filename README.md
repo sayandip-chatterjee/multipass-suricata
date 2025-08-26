@@ -32,47 +32,20 @@ python3 setup_suricata.py
 ```
 
 ADDITIONAL NOTES:
-```
-sudo su
-cd /var/lib/suricata/rules
 
-after opening the directory you need to either create a new rule file or delete the suricata.rules file content and replace your own rules content.
-If you create a new rule file then make sure it is present in the suricata.yaml configuration file
-Then restart Suricata
+| Action / Topic | Command / Path / Notes |
+|----------------|----------------------|
+| Enter SuperUser | `sudo su` |
+| Default rules directory | `/var/lib/suricata/rules` |
+| Log / alert tracking | `/var/log/suricata/fast.log` <br> `/var/log/suricata/eve.json` |
+| Track Suricata logs | `/var/log/suricata/suricata.log` |
+| Test, load, validate Suricata | `sudo suricata -T -c /etc/suricata/suricata.yaml -v` |
+| Restart signal | `sudo kill -usr2 $(pidof suricata)` |
+| Suricata config | `/etc/suricata/suricata.yaml` |
+| Systemctl commands | `sudo systemctl start suricata.service` <br> `sudo systemctl status suricata.service` <br> `sudo systemctl stop suricata.service` |
+| Start a HTTP server | `sudo python3 -m http.server 80` |
+| Start a HTTPS server | 1. `sudo nano https.rb` <br> 2. `ruby -r webrick/https -e 'WEBrick::HTTPServer.new(Port: 8000, DocumentRoot: ".", SSLEnable: true, SSLCertName: [%w[CN localhost]]).start'` <br> 3. `sudo chmod 777 https.rb` <br> 4. `./https.rb` <br> 5. Access via `https://localhost:8000` |
+| Editing / adding rules | After opening `/var/lib/suricata/rules`, either create a new rule file or delete `suricata.rules` content and replace with your own rules. Ensure the file is referenced in `suricata.yaml`, then restart Suricata. |
 
-cd /etc/suricata/rules
 
-IMPORTANT COMMANDS:
-sudo tail -f /var/log/suricata/fast.log
-sudo tail -f /var/log/suricata/eve.json
-sudo tail -f /var/log/suricata/suricata.log
-sudo suricata -T -c /etc/suricata/suricata.yaml -v
-sudo systemctl start suricata.service
-sudo systemctl status suricata.service
-sudo systemctl stop suricata.service
-sudo kill -usr2 $(pidof suricata)"
-sudo nano /etc/suricata/suricata.yaml
-sudo scapy
-curl
-sudo nano /var/lib/suricata/rules/suricata.rules
-sudo nano /var/lib/suricata/rules/test.rules
-tcpdump or wireshark
-sudo python3 -m http.server 80
 
-For starting a HTTPS server: (IGNORE for NOW)
-
-1. Ruby-Script (I tested with Ruby 2.1.2.)
-
-sudo nano https.rb
-
-ruby -r webrick/https -e '
-  WEBrick::HTTPServer.new(
-    Port: 8000, DocumentRoot: ".",
-    SSLEnable: true, SSLCertName: [%w[CN localhost]]).start'
-
-sudo chmod 777 https.rb
-
-./https.rb
-
-https://localhost:8000
-```
