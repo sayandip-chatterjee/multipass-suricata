@@ -1,6 +1,54 @@
 #!/usr/bin/env python3
 
-import os, subprocess, time, sys
+import shutil, sys, subprocess, platform, time, os
+
+SYSTEM = platform.system().lower()
+IS_WSL = "microsoft" in platform.uname().release.lower()
+
+if SYSTEM == "windows":
+    MULTIPASS = "multipass.exe"
+else:
+    MULTIPASS = "multipass"
+
+def run(cmd, check=True, shell=True):
+    print(f"\033[1;34m[+] Running:\033[0m {cmd}")
+    return subprocess.run(cmd, shell=shell, text=True, check=check)
+
+def check_multipass():
+    """Verify multipass binary exists, else try to install."""
+    if shutil.which(MULTIPASS) is None:
+        print(f"\033[1;31m[!] {MULTIPASS} not found in PATH.\033[0m")
+
+        if SYSTEM == "windows":
+            print("\033[1;33m[>] Attempting automatic Multipass install on Windows...\033[0m")
+
+            try:
+                # Use winget (Windows Package Manager)
+                run("winget install --id Canonical.Multipass -e --accept-source-agreements --accept-package-agreements")
+                print("\n\033[1;32m[✓] Multipass installed successfully.\033[0m")
+            except Exception as e:
+                print("\033[1;31m[!] Automatic install failed. Please install manually:\033[0m")
+                print("➡ https://multipass.run/download/windows")
+                sys.exit(1)
+
+        elif SYSTEM == "linux" and not IS_WSL:
+            print("\033[1;33m[>] Installing Multipass via snap...\033[0m")
+            try:
+                run("sudo snap install multipass")
+                run("sudo snap refresh")
+                run("sudo chmod a+w /var/snap/multipass/common/multipass_socket", check=False)
+                print("\n\033[1;32m[✓] Multipass installed successfully.\033[0m")
+            except Exception:
+                print("\033[1;31m[!] Failed to install multipass automatically.\033[0m")
+                print("➡ Please install manually: https://multipass.run")
+                sys.exit(1)
+
+        elif IS_WSL:
+            print("\033[1;31m[!] WSL detected. Multipass usually does not work in nested virtualization.\033[0m")
+            print("➡ Please run the script on native Linux or Windows instead.")
+            sys.exit(1)
+    else:
+        print(f"\033[1;32m[✓] Found {MULTIPASS} in PATH.\033[0m")
 
 def progress_bar(duration, prefix="Progress", length=30):
     """
@@ -21,7 +69,6 @@ def progress_bar(duration, prefix="Progress", length=30):
 def wait_for_enter(message="Press ENTER to continue..."):
     input(f"\033[1;33m{message}\033[0m")
 
-# Run shell commands
 def run(cmd, capture_output=False, check=True, shell=True):
     print(f"\033[1;34m[+] Running:\033[0m {cmd}")
     return subprocess.run(
@@ -33,25 +80,17 @@ def main():
     print("\n\033[1;31mDisclaimer: Deactivate any SECURED network before proceeding...\033[0m")
     wait_for_enter("Press ENTER to continue...")
 
-    print("\n\033[1;31mInstalling multipass...\033[0m")
-    run("sudo snap install multipass")
-    wait_for_enter("Press ENTER to continue...")
-
-    run("sudo snap refresh")
-    wait_for_enter("Press ENTER to continue...")
+    check_multipass()
 
     vmname = input("\n\033[1;31mPlease type a unique name for your VM instance:\033[0m ")
 
-    run("sudo chmod a+w /var/snap/multipass/common/multipass_socket")
-    wait_for_enter("Press ENTER to continue...")
+    run(f"{MULTIPASS} launch --name {vmname}")
+    run(f"{MULTIPASS} exec {vmname} -- lsb_release -a")
+    run(f"{MULTIPASS} list")
+    run(f"{MULTIPASS} help")
+    wait_for_enter()
 
-    run(f"multipass launch --name {vmname}")
-    run(f"multipass exec {vmname} -- lsb_release -a")
-    run("multipass list")
-    run("multipass help")
-    wait_for_enter("Press ENTER to continue...")
-
-    run(f"multipass start {vmname}")
+    run(f"{MULTIPASS} start {vmname}")
 
     print("\n\033[1;31mInstalling Suricata...\033[0m")
 
@@ -60,14 +99,13 @@ def main():
     1. Ctrl + C (exit)
     2. multipass delete $vmname ; multipass purge
     """
+    run(f"{MULTIPASS} exec {vmname} -- sudo add-apt-repository -y ppa:oisf/suricata-stable")
+    run(f"{MULTIPASS} exec {vmname} -- sudo apt install -y suricata")
+    run(f"{MULTIPASS} exec {vmname} -- sudo systemctl enable suricata.service")
+    run(f"{MULTIPASS} exec {vmname} -- sudo systemctl stop suricata.service")
 
-    run(f"multipass exec {vmname} -- sudo add-apt-repository -y ppa:oisf/suricata-stable")
-    run(f"multipass exec {vmname} -- sudo apt install -y suricata")
-    run(f"multipass exec {vmname} -- sudo systemctl enable suricata.service")
-    run(f"multipass exec {vmname} -- sudo systemctl stop suricata.service")
-
-    run(f"multipass exec {vmname} -- ip addr")
-    run(f"multipass exec {vmname} -- ip -p -j route show default")
+    run(f"{MULTIPASS} exec {vmname} -- ip addr")
+    run(f"{MULTIPASS} exec {vmname} -- ip -p -j route show default")
 
     print("\n\033[1;31mPlease note down the network interface named <dev> above.\033[0m")
     print("\n\033[1;33mPlease Read Below Paragraph\033[0m")
@@ -75,50 +113,50 @@ def main():
     If you are using nano you can also go to the line directly by entering CTRL+_ and typing the line number. \n \
     Below that line is the default interface that Suricata will use to inspect traffic.\n \
     Edit the line to match your interface named <dev>:\n")
-    wait_for_enter("Press ENTER to continue...")
+    wait_for_enter()
 
-    run(f"multipass exec {vmname} -- sudo nano /etc/suricata/suricata.yaml")
+    run(f"{MULTIPASS} exec {vmname} -- sudo nano /etc/suricata/suricata.yaml")
 
     print("\n\033[1;31mAdd these at the bottom of the suricata.yaml file:\033[0m")
     print("\ndetect-engine:\n  - rule-reload: true\n")
-    wait_for_enter("Press ENTER to continue...")
+    wait_for_enter()
 
-    run(f"multipass exec {vmname} -- sudo nano /etc/suricata/suricata.yaml")
+    run(f"{MULTIPASS} exec {vmname} -- sudo nano /etc/suricata/suricata.yaml")
 
-    print("\n\033[1;31mSince Rule Loading is enabled, use this command after adding new rules:\033[0m")
-    print(f"multipass exec {vmname} -- sudo kill -usr2 $(pidof suricata)")
-    wait_for_enter("Press ENTER to continue...")
+    print("\n\033[1;31mSince Rule Loading is enabled, use this after adding new rules:\033[0m")
+    print(f"{MULTIPASS} exec {vmname} -- sudo kill -usr2 $(pidof suricata)")
+    wait_for_enter()
 
-    run(f"multipass exec {vmname} -- sudo suricata-update")
-    run(f"multipass exec {vmname} -- sudo suricata-update list-sources")
+    run(f"{MULTIPASS} exec {vmname} -- sudo suricata-update")
+    run(f"{MULTIPASS} exec {vmname} -- sudo suricata-update list-sources")
 
-    print("\n\033[1;31mTo enable a custome source as listed above, execute the below command\033[0m")
-    print(f"multipass exec {vmname} -- sudo suricata-update enable-source tgreen/hunting")
-    wait_for_enter("Press ENTER to continue...")
+    print("\n\033[1;31mTo enable a custom source as listed above:\033[0m")
+    print(f"{MULTIPASS} exec {vmname} -- sudo suricata-update enable-source tgreen/hunting")
+    wait_for_enter()
 
-    run(f"multipass exec {vmname} -- sudo suricata -T -c /etc/suricata/suricata.yaml -v")
+    run(f"{MULTIPASS} exec {vmname} -- sudo suricata -T -c /etc/suricata/suricata.yaml -v")
 
-    run(f"multipass exec {vmname} -- sudo systemctl start suricata.service")
-    run(f"multipass exec {vmname} -- sudo systemctl status suricata.service")
+    run(f"{MULTIPASS} exec {vmname} -- sudo systemctl restart suricata.service")
+    run(f"{MULTIPASS} exec {vmname} -- sudo systemctl status suricata.service")
     progress_bar(60, prefix="Waiting for Suricata to initialize...")
 
-    run(f"multipass exec {vmname} -- curl http://testmynids.org/uid/index.html")
+    run(f"{MULTIPASS} exec {vmname} -- curl http://testmynids.org/uid/index.html")
 
-    wait_for_enter("Press ENTER to continue...")
-    run(f"multipass exec {vmname} -- sudo grep 2100498 /var/log/suricata/fast.log", check=False)
-    wait_for_enter("Press ENTER to continue...")
-    run(f"multipass exec {vmname} -- sudo jq 'select(.alert .signature_id==2100498)' /var/log/suricata/eve.json", check=False)
-    wait_for_enter("Press ENTER to continue...")
+    wait_for_enter()
+    run(f"{MULTIPASS} exec {vmname} -- sudo grep 2100498 /var/log/suricata/fast.log", check=False)
+    wait_for_enter()
+    run(f"""{MULTIPASS} exec {vmname} -- sudo jq 'select(.alert.signature_id==2100498)' /var/log/suricata/eve.json""", check=False)
+    wait_for_enter()
 
-    print("\n\033[1;31mIf you can visualize alerts in both fast.log and eve.json, Suricata setup was successful!\033[0m")
-    wait_for_enter("Press ENTER to continue...")
+    print("\n\033[1;31mIf you see alerts in both fast.log and eve.json, Suricata setup was successful!\033[0m")
+    wait_for_enter()
 
-    print("\n\033[1;31mIf you CANNOT visualize alerts in both fast.log and eve.json, Suricata setup FAILED! So exec into your vm and then run the curl command used here in line 87 and check for the log in fast.log and eve.json\033[0m")
-    wait_for_enter("Press ENTER to continue...")
+    print("\n\033[1;31mIf NOT, run curl inside VM and check logs as done in lines after progress_bar above manually.\033[0m")
+    wait_for_enter()
     print("\n\033[1;33mNow starting a shell session with your VM... Let's go!\033[0m")
-    wait_for_enter("Press ENTER to continue...")
+    wait_for_enter()
 
-    os.system(f"multipass shell {vmname}")
+    os.system(f"{MULTIPASS} shell {vmname}")
 
 
 if __name__ == "__main__":
