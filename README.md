@@ -43,8 +43,8 @@ ADDITIONAL NOTES:
 | Restart signal | `sudo kill -usr2 $(pidof suricata)` |
 | Suricata config | `/etc/suricata/suricata.yaml` |
 | Systemctl commands | `sudo systemctl start suricata.service` <br> `sudo systemctl status suricata.service` <br> `sudo systemctl stop suricata.service` |
-| Start a HTTP server | `sudo python3 -m http.server 80` |
-| Start a HTTPS server | 1. `sudo nano https.rb` <br> 2. `ruby -r webrick/https -e 'WEBrick::HTTPServer.new(Port: 8000, DocumentRoot: ".", SSLEnable: true, SSLCertName: [%w[CN localhost]]).start'` <br> 3. `sudo chmod 777 https.rb` <br> 4. `./https.rb` <br> 5. Access via `https://localhost:8000` |
+| Start a HTTP server | `sudo python3 -m http.server 80` -> Open in browser http://localhost:80 |
+| Start a HTTPS server | `sudo ruby -r webrick/https -e "WEBrick::HTTPServer.new(Port: 8000, DocumentRoot: '.', SSLEnable: true, SSLCertName: [%w[CN localhost]]).start"` -> Open in browser https://localhost:8000|
 | Editing / adding rules | After opening `/var/lib/suricata/rules`, either create a new rule file or delete `suricata.rules` content and replace with your own rules. Ensure the file is referenced in `suricata.yaml`, then restart Suricata. |
 
 
