@@ -59,9 +59,8 @@ Using **Suricata inside a Multipass VM** allows you to:
 ---
 
 ## 🛠️ Requirements  
-- Ubuntu (tested on **22.04+**)
-- Windows (NOT tested across distributions)
-- **Python 3.8+** (MUST be installed in the system)
+- OS : Ubuntu (tested on **22.04+**) _or_ Windows (NOT tested across distributions)
+- Interpreter/Runtime : **Python 3.8+** (MUST be installed in the system)
 
 ---
 
