@@ -21,15 +21,27 @@ def check_multipass():
 
         if SYSTEM == "windows":
             print("\033[1;33m[>] Attempting automatic Multipass install on Windows...\033[0m")
-
             try:
-                # Use winget (Windows Package Manager)
+                # Try winget first
                 run("winget install --id Canonical.Multipass -e --accept-source-agreements --accept-package-agreements")
-                print("\n\033[1;32m[✓] Multipass installed successfully.\033[0m")
-            except Exception as e:
-                print("\033[1;31m[!] Automatic install failed. Please install manually:\033[0m")
-                print("➡ https://multipass.run/download/windows")
-                sys.exit(1)
+                print("\n\033[1;32m[✓] Multipass installed successfully via winget.\033[0m")
+            except Exception:
+                try:
+                    print("\033[1;33m[>] winget not available. Falling back to MSI installer...\033[0m")
+                    installer_url = "https://multipass.run/download/windows/latest"
+                    installer_path = os.path.join(os.environ["TEMP"], "multipass-latest.msi")
+
+                    # Download MSI using PowerShell
+                    ps_download = f'powershell -Command "Invoke-WebRequest -Uri {installer_url} -OutFile {installer_path}"'
+                    run(ps_download)
+
+                    # Install MSI silently
+                    run(f'msiexec /i "{installer_path}" /qn /norestart')
+                    print("\n\033[1;32m[✓] Multipass installed successfully via MSI.\033[0m")
+                except Exception:
+                    print("\033[1;31m[!] Automatic install failed. Please install manually:\033[0m")
+                    print("➡ https://multipass.run/download/windows")
+                    sys.exit(1)
 
         elif SYSTEM == "linux" and not IS_WSL:
             print("\033[1;33m[>] Installing Multipass via snap...\033[0m")
