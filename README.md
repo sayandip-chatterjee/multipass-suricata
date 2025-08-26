@@ -50,7 +50,7 @@ Using **Suricata inside a Multipass VM** allows you to:
 
 ## 🚀 Features  
 - Automated **Multipass installation & VM provisioning**.
-- Suricata installation and **systemd service configuration**.  
+- Suricata installation and **with various rulesets ready to export options**.  
 - Guided **Suricata YAML editing** for network interface & rule reloading.  
 - Built-in **suricata-update** integration to fetch latest rule sources.  
 - Test setup against [`testmynids.org`](http://testmynids.org/uid/index.html) to verify detection.  
@@ -59,9 +59,9 @@ Using **Suricata inside a Multipass VM** allows you to:
 ---
 
 ## 🛠️ Requirements  
-- Ubuntu (tested on **22.04+**)  
-- **Python 3.8+**  
-- **Multipass** installed (`snap install multipass`)
+- Ubuntu (tested on **22.04+**)
+- Windows (NOT tested across distributions)
+- **Python 3.8+** (MUST be installed in the system)
 
 ---
 
