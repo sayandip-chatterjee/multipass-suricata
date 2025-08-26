@@ -4,6 +4,42 @@ This repository provides a **Python-based automation script** to deploy and conf
 
 ---
 
+## 🖥️ About Suricata and Multipass  
+
+**[Suricata](https://suricata.io/)** is a high-performance, open-source **Intrusion Detection and Prevention System (IDS/IPS)** capable of:  
+
+- Real-time network traffic monitoring and analysis  
+- Signature-based and anomaly-based threat detection  
+- Deep Packet Inspection (DPI) and protocol analysis  
+- Integration with logging formats like `EVE JSON` for advanced dashboards  
+
+Suricata comes with **many advanced features**, including:  
+
+- Multi-threading for high throughput  
+- Automatic rule updates via `suricata-update`  
+- AF_PACKET for high-speed network capture  
+- Customizable rule sets for tailored detection  
+
+More features: [https://suricata.io/features/all-features/](https://suricata.io/features/all-features/)  
+
+**[Multipass](https://multipass.run/)** is a lightweight, cross-platform tool for managing **Ubuntu virtual machines**. It allows you to:  
+
+- Rapidly spin up disposable VMs for testing or development  
+- Manage multiple VM instances with simple commands (`launch`, `exec`, `shell`)  
+- Run complex software in isolated environments without affecting the host  
+- Experiment with services like Suricata safely  
+
+### 🔗 Why use them together  
+
+Using **Suricata inside a Multipass VM** allows you to:  
+
+- Safely experiment with IDS/IPS configurations without risking your host or office network  
+- Quickly spin up test environments for learning or proof-of-concept detection rules  
+- Recreate different network scenarios, test rule updates, and inspect logs in a fully isolated VM  
+- Automate setup and configuration for consistent, reproducible environments  
+
+---
+
 ## 🚀 Features  
 - Automated **Multipass installation & VM provisioning**.
 - Suricata installation and **systemd service configuration**.  
