@@ -1,6 +1,6 @@
 # 🛡️ Suricata on Multipass – Automated Setup Script  
 
-This repository provides a **Python-based automation script** to deploy and configure **Suricata IDS/IPS** inside a **Multipass-managed Ubuntu VM**.
+This repository provides **Python-based automation script** to deploy and configure **Suricata IDS/IPS** inside a **Multipass-managed Ubuntu VM**.
 
 ---
 
