@@ -10,29 +10,13 @@ if SYSTEM == "windows":
 else:
     MULTIPASS = "multipass"
 
-def restart_script():
-    """Restart script in the same shell type (PowerShell or CMD)."""
-    print("\033[1;33m[!] Restarting script so Multipass is available...\033[0m")
-    script = os.path.abspath(sys.argv[0])
-    args = " ".join(sys.argv[1:])
-
-    # Detect shell
-    parent = os.environ.get("COMSPEC", "").lower()  # usually cmd.exe
-    ps_ver = os.environ.get("PSModulePath", "")
-
-    if "powershell" in parent or ps_ver:
-        # Relaunch in PowerShell
-        ps_exe = shutil.which("pwsh.exe") or shutil.which("powershell.exe")
-        if ps_exe:
-            os.system(f'start "" "{ps_exe}" -NoExit -Command "python \'{script}\' {args}"')
-        else:
-            print("\033[1;31m[!] Could not detect PowerShell executable. Falling back to cmd.\033[0m")
-            os.system(f'start cmd /k python "{script}" {args}')
+def add_env_script():
+    mp_path = r"C:\Program Files\Multipass\bin"
+    if os.path.exists(mp_path):
+        os.environ["PATH"] += os.pathsep + mp_path
+        print(f"[+] Added {mp_path} to PATH for this session.")
     else:
-        # Relaunch in CMD
-        os.system(f'start cmd /k python "{script}" {args}')
-
-    sys.exit(0)
+        print(f"[!] Multipass path not found at {mp_path}")
 
 def run(cmd, check=True, shell=True):
     print(f"\033[1;34m[+] Running:\033[0m {cmd}")
@@ -49,7 +33,7 @@ def check_multipass():
                 # Try winget first
                 run("winget install --id Canonical.Multipass -e --accept-source-agreements --accept-package-agreements")
                 print("\n\033[1;32m[✓] Multipass installed successfully via winget.\033[0m")
-                restart_script()
+                add_env_script()
             except Exception:
                 try:
                     print("\033[1;33m[>] winget not available. Falling back to MSI installer...\033[0m")
@@ -63,7 +47,7 @@ def check_multipass():
                     # Install MSI silently
                     run(f'msiexec /i "{installer_path}" /qn /norestart')
                     print("\n\033[1;32m[✓] Multipass installed successfully via MSI.\033[0m")
-                    restart_script()
+                    add_env_script()
                 except Exception:
                     print("\033[1;31m[!] Automatic install failed. Please install manually:\033[0m")
                     print("➡ https://multipass.run/download/windows")
