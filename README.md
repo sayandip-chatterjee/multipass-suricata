@@ -66,7 +66,7 @@ Using **Suricata inside a Multipass VM** allows you to:
 
 ## 📦 Installation & Usage  
 
-Clone the repository and run the setup script:  
+[LINUX] Clone the repository and run the setup script:  
 
 ```bash
 git clone https://github.com/sayandip-chatterjee/multipass-suricata.git
