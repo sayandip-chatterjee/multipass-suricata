@@ -10,17 +10,11 @@ if SYSTEM == "windows":
 else:
     MULTIPASS = "multipass"
 
-def refresh_path_for_multipass():
-    """Reload PATH from registry to make multipass available immediately."""
-    try:
-        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                            r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
-            system_path, _ = winreg.QueryValueEx(key, "Path")
-        os.environ["PATH"] = system_path + ";" + os.environ["PATH"]
-        print("\033[1;32m[✓] PATH refreshed. Multipass should now be available without restarting.\033[0m")
-    except Exception as e:
-        print(f"\033[1;33m[!] Could not refresh PATH automatically: {e}\033[0m")
-        print("➡ Please restart your terminal if 'multipass' is not found.")
+def restart_script():
+    """Restart the current Python script with the same arguments."""
+    print("\033[1;33m[!] Restarting script so Multipass is available...\033[0m")
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
 
 def run(cmd, check=True, shell=True):
     print(f"\033[1;34m[+] Running:\033[0m {cmd}")
@@ -37,7 +31,7 @@ def check_multipass():
                 # Try winget first
                 run("winget install --id Canonical.Multipass -e --accept-source-agreements --accept-package-agreements")
                 print("\n\033[1;32m[✓] Multipass installed successfully via winget.\033[0m")
-                refresh_path_for_multipass()
+                restart_script()
             except Exception:
                 try:
                     print("\033[1;33m[>] winget not available. Falling back to MSI installer...\033[0m")
@@ -51,7 +45,7 @@ def check_multipass():
                     # Install MSI silently
                     run(f'msiexec /i "{installer_path}" /qn /norestart')
                     print("\n\033[1;32m[✓] Multipass installed successfully via MSI.\033[0m")
-                    refresh_path_for_multipass()
+                    restart_script()
                 except Exception:
                     print("\033[1;31m[!] Automatic install failed. Please install manually:\033[0m")
                     print("➡ https://multipass.run/download/windows")
