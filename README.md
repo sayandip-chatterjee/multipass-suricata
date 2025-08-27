@@ -59,15 +59,14 @@ Using **Suricata inside a Multipass VM** allows you to:
 ---
 
 ## 🛠️ Requirements  
-- OS : Ubuntu (tested on **22.04+**) _or_ Windows (NOT tested across distributions)
+- OS : Ubuntu (tested on **22.04+**) _or_ Windows (tested on **Windows11**)
 - Interpreter/Runtime : **Python 3.8+** (MUST be installed in the system)
 
 ---
 
 ## 📦 Installation & Usage  
 
-[LINUX] Clone the repository and run the setup script:  
-
+[LINUX] Clone the repository and run the setup script:
 ```bash
 git clone https://github.com/sayandip-chatterjee/multipass-suricata.git
 cd multipass-suricata/
@@ -76,14 +75,16 @@ python3 setup_suricata.py
 
 [WINDOWS] Ensure all the steps are done as mentioed:
 ```bash
-In the Windows machine BIOS setup, make sure that virtualization is turned on
-Install git bash - https://git-scm.com/downloads/win and close the git bash window, do not clone yet.
-Install python3.8 from Microsoft Store
-Go to Windows Features from the Start Menu -> Search and make sure You enable the "HyperV", "Virtual Machine Platform", and the "Windows Hypervisor Platform" to run the VM. Restart the machine.
-Open powershell (NOT AS Administrator)
-git clone https://github.com/sayandip-chatterjee/multipass-suricata.git
-cd multipass-suricata/
-python3 setup_suricata.py
+- In the Windows machine BIOS setup, make sure that virtualization is turned on
+- Install git bash - https://git-scm.com/downloads/win and close the git bash window, do not clone yet.
+- Install python3.8 from Microsoft Store
+- Go to Windows Features from the Start Menu -> Search and make sure You enable the
+  "HyperV", "Virtual Machine Platform", and the "Windows Hypervisor Platform" to run the VM.
+- Restart the machine.
+- Open powershell (NOT AS Administrator)
+- git clone https://github.com/sayandip-chatterjee/multipass-suricata.git
+- cd multipass-suricata/
+- python3 setup_suricata.py
 ```
 
 ADDITIONAL NOTES:
