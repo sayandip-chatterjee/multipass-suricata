@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import shutil, sys, subprocess, platform, time, os
+import shutil, sys, subprocess, platform, time, os, winreg
 
 SYSTEM = platform.system().lower()
 IS_WSL = "microsoft" in platform.uname().release.lower()
@@ -9,6 +9,18 @@ if SYSTEM == "windows":
     MULTIPASS = "multipass.exe"
 else:
     MULTIPASS = "multipass"
+
+def refresh_path_for_multipass():
+    """Reload PATH from registry to make multipass available immediately."""
+    try:
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                            r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
+            system_path, _ = winreg.QueryValueEx(key, "Path")
+        os.environ["PATH"] = system_path + ";" + os.environ["PATH"]
+        print("\033[1;32m[✓] PATH refreshed. Multipass should now be available without restarting.\033[0m")
+    except Exception as e:
+        print(f"\033[1;33m[!] Could not refresh PATH automatically: {e}\033[0m")
+        print("➡ Please restart your terminal if 'multipass' is not found.")
 
 def run(cmd, check=True, shell=True):
     print(f"\033[1;34m[+] Running:\033[0m {cmd}")
@@ -25,6 +37,7 @@ def check_multipass():
                 # Try winget first
                 run("winget install --id Canonical.Multipass -e --accept-source-agreements --accept-package-agreements")
                 print("\n\033[1;32m[✓] Multipass installed successfully via winget.\033[0m")
+                refresh_path_for_multipass()
             except Exception:
                 try:
                     print("\033[1;33m[>] winget not available. Falling back to MSI installer...\033[0m")
@@ -38,6 +51,7 @@ def check_multipass():
                     # Install MSI silently
                     run(f'msiexec /i "{installer_path}" /qn /norestart')
                     print("\n\033[1;32m[✓] Multipass installed successfully via MSI.\033[0m")
+                    refresh_path_for_multipass()
                 except Exception:
                     print("\033[1;31m[!] Automatic install failed. Please install manually:\033[0m")
                     print("➡ https://multipass.run/download/windows")
@@ -157,13 +171,13 @@ def main():
     wait_for_enter()
     run(f"{MULTIPASS} exec {vmname} -- sudo grep 2100498 /var/log/suricata/fast.log", check=False)
     wait_for_enter()
-    run(f"""{MULTIPASS} exec {vmname} -- sudo jq 'select(.alert.signature_id==2100498)' /var/log/suricata/eve.json""", check=False)
+    run(f"{MULTIPASS} exec {vmname} -- sudo jq 'select(.alert.signature_id==2100498)' /var/log/suricata/eve.json", check=False)
     wait_for_enter()
 
     print("\n\033[1;31mIf you see alerts in both fast.log and eve.json, Suricata setup was successful!\033[0m")
     wait_for_enter()
 
-    print("\n\033[1;31mIf NOT, run curl inside VM and check logs as done in lines after progress_bar above manually.\033[0m")
+    print("\n\033[1;31mIf NOT, run curl inside VM and check logs, follow as done in lines after progress_bar in the script, manually.\033[0m")
     wait_for_enter()
     print("\n\033[1;33mNow starting a shell session with your VM... Let's go!\033[0m")
     wait_for_enter()
