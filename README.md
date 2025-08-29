@@ -93,6 +93,7 @@ ADDITIONAL NOTES:
 |----------------|----------------------|
 | Enter SuperUser | `sudo su` |
 | Default rules directory | `/var/lib/suricata/rules` |
+| External rules download | `sudo suricata-update list-sources` → select NAME of rule source → `sudo suricata-update enable-source <NAME> && suricata-update update-sources && suricata-update`. |
 | Log / alert tracking | `/var/log/suricata/fast.log` <br> `/var/log/suricata/eve.json` |
 | Track Suricata logs | `/var/log/suricata/suricata.log` |
 | Test, load, validate Suricata | `sudo suricata -T -c /etc/suricata/suricata.yaml -v` |
