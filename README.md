@@ -21,13 +21,6 @@ This repository provides **Python-based automation script** to deploy and config
 - Deep Packet Inspection (DPI) and protocol analysis  
 - Integration with logging formats like `EVE JSON` for advanced dashboards  
 
-Suricata comes with **many advanced features**, including:  
-
-- Multi-threading for high throughput  
-- Automatic rule updates via `suricata-update`  
-- AF_PACKET for high-speed network capture  
-- Customizable rule sets for tailored detection  
-
 More features: [https://suricata.io/features/all-features/](https://suricata.io/features/all-features/)  
 
 **[Multipass](https://multipass.run/)** is a lightweight, cross-platform tool for managing **Ubuntu virtual machines**. It allows you to:  
@@ -93,7 +86,7 @@ ADDITIONAL NOTES:
 |----------------|----------------------|
 | Enter SuperUser | `sudo su` |
 | Default rules directory | `/var/lib/suricata/rules` |
-| External rules download | `sudo suricata-update list-sources` → select NAME of rule source → `sudo suricata-update enable-source <NAME> && suricata-update update-sources && suricata-update`. |
+| External rules download | Backup the `suricata.rules` file first. Then `sudo suricata-update list-sources` → select NAME of rule source → `sudo suricata-update enable-source <NAME> && suricata-update update-sources && suricata-update`. |
 | Log / alert tracking | `/var/log/suricata/fast.log` <br> `/var/log/suricata/eve.json` |
 | Track Suricata logs | `/var/log/suricata/suricata.log` |
 | Test, load, validate Suricata | `sudo suricata -T -c /etc/suricata/suricata.yaml -v` |
@@ -102,7 +95,7 @@ ADDITIONAL NOTES:
 | Systemctl commands | `sudo systemctl start suricata.service` <br> `sudo systemctl status suricata.service` <br> `sudo systemctl stop suricata.service` |
 | Start a HTTP server | `sudo python3 -m http.server 80` -> Open in browser http://localhost:80 |
 | Start a HTTPS server | `sudo ruby -r webrick/https -e "WEBrick::HTTPServer.new(Port: 8000, DocumentRoot: '.', SSLEnable: true, SSLCertName: [%w[CN localhost]]).start"` -> Open in browser https://localhost:8000|
-| Editing / adding rules | After opening `/var/lib/suricata/rules`, either create a new rule file or delete `suricata.rules` content and replace with your own rules. Ensure the file is referenced in `suricata.yaml`, then restart Suricata. |
+| Editing / adding rules | Backup the `suricata.rules` file first. After opening `/var/lib/suricata/rules`, either create a new rule file or delete `suricata.rules` content and replace with your own rules. Ensure the file is referenced in `suricata.yaml`, then restart Suricata.|
 
 
 
