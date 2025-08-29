@@ -44,7 +44,7 @@ Using **Suricata inside a Multipass VM** allows you to:
 
 ## 🚀 Features  
 - Automated **Multipass installation & VM provisioning**.
-- Suricata installation and **with various rulesets ready to export options**.  
+- Suricata installation as default IDS (need to tweak config for enabling IPS) and **with various rulesets ready to export options**.  
 - Guided **Suricata YAML editing** for network interface & rule reloading.  
 - Built-in **suricata-update** integration to fetch latest rule sources.  
 - Test setup against [`testmynids.org`](http://testmynids.org/uid/index.html) to verify detection.  
