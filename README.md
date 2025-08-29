@@ -29,7 +29,9 @@ More features: [https://suricata.io/features/all-features/](https://suricata.io/
 - Rapidly spin up disposable VMs for testing or development  
 - Manage multiple VM instances with simple commands (`launch`, `exec`, `shell`)  
 - Run complex software in isolated environments without affecting the host  
-- Experiment with services like Suricata safely  
+- Experiment with services like Suricata safely
+
+More features: [https://documentation.ubuntu.com/multipass/en/latest/](https://documentation.ubuntu.com/multipass/en/latest/)  
 
 ### 🔗 Why use them together  
 
