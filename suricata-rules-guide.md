@@ -22,7 +22,7 @@ alert tcp any any -> 192.168.1.10 80 (msg:"Possible attack"; content:"badstring"
 - **Source**: `any any` → any IP, any port  
 - **Direction**: `->` → from source to destination  
 - **Destination**: `192.168.1.10 80` → IP and port  
-- **Options**: inside parentheses  
+- **Options**: inside parentheses [MORE PARAMETERS ARE THERE]
   - `msg` → log message  
   - `content` → pattern to search in payload  
   - `sid` → signature ID  
@@ -35,6 +35,16 @@ alert tcp any any -> 192.168.1.10 80 (msg:"Possible attack"; content:"badstring"
 - `drop` → drop the packet (inline mode)  
 - `reject` → drop + send error back  
 - `pass` → ignore traffic  
+
+---
+
+## 🔹 Protocols
+- Can be `dhcp`, `dns`, `ftp`, `http`, `icmp`, `ip`, `ipv6`, `nfs`, `ntp`, `pkthdr`, `rdp`, `rfb`, `smb`, `smtp`, `ssh`, `tcp`, `tls`, `udp`, etc.
+
+---
+
+## 🔹 Direction Operators
+- Can be `->` (one way), `<-` (other way), `<->` (both directions)
 
 ---
 
@@ -101,5 +111,6 @@ drop icmp any any -> any any (msg:"ICMP blocked"; sid:100004; rev:1;)
 ```
 
 ---
+👉 So in short: A Suricata rule is like a firewall rule + deep packet inspection filter + alert trigger combined.
 
 ✅ With this guide, you can now **write, read, and customize Suricata rules** effectively.  
