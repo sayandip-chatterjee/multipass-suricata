@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import shutil, sys, subprocess, platform, time, os, winreg
+import shutil, sys, subprocess, platform, time, os
 
 SYSTEM = platform.system().lower()
 IS_WSL = "microsoft" in platform.uname().release.lower()
