@@ -11,6 +11,7 @@ This repository provides **Python-based automation script** to deploy and config
 - [🚀 Features](#-features)
 - [🛠️ Requirements](#️-requirements)
 - [📦 Installation & Usage](#-installation--usage)
+- [📜 Suricata Rules Breakdown](#-suricata-rules-breakdown)
 
 ## 🖥️ About Suricata and Multipass  
 
@@ -97,6 +98,14 @@ ADDITIONAL NOTES:
 | Start a HTTPS server | `sudo ruby -r webrick/https -e "WEBrick::HTTPServer.new(Port: 8000, DocumentRoot: '.', SSLEnable: true, SSLCertName: [%w[CN localhost]]).start"` -> Open in browser https://localhost:8000|
 | Editing / adding rules | Backup the `suricata.rules` file first. After opening `/var/lib/suricata/rules`, either create a new rule file or delete `suricata.rules` content and replace with your own rules. Ensure the file is referenced in `suricata.yaml`, then restart Suricata.|
 
+---
+
+## 📜 Suricata Rules Breakdown
+
+See full reference in 
+- [suricata-rules-guide.md](./suricata-rules-guide.md).
+  - [suricata-rule-options-cheat-sheet.md](./suricata-rule-options-cheat-sheet.md).
+  
 
 
 
