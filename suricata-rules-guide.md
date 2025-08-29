@@ -13,6 +13,11 @@ They specify:
 A typical Suricata rule looks like this:
 
 ```suricata
+action protocol source_ip source_port <direction-operator> dest_ip dest_port (options)
+```
+Example:
+
+```suricata
 alert tcp any any -> 192.168.1.10 80 (msg:"Possible attack"; content:"badstring"; sid:100001; rev:1;)
 ```
 
@@ -22,7 +27,7 @@ alert tcp any any -> 192.168.1.10 80 (msg:"Possible attack"; content:"badstring"
 - **Source**: `any any` → any IP, any port  
 - **Direction**: `->` → from source to destination  
 - **Destination**: `192.168.1.10 80` → IP and port  
-- **Options**: inside parentheses [MORE PARAMETERS ARE THERE]
+- **Options**: inside parentheses 
   - `msg` → log message  
   - `content` → pattern to search in payload  
   - `sid` → signature ID  
@@ -80,6 +85,14 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"External to web"; sid
 alert tcp [192.168.1.10,10.0.0.5] [22,2222] -> $HOME_NET any (msg:"SSH from specific hosts"; sid:100006;)
 ```
 
+### ✅ So apart from any, you can use:
+- Exact IPs / Ports
+- Subnets (CIDR)
+- Ranges
+- Lists
+- Negations
+- Variables ($HOME_NET, $EXTERNAL_NET, etc.)
+
 ---
 
 ## 🔹 Rule Options (inside parentheses)
@@ -90,7 +103,8 @@ alert tcp [192.168.1.10,10.0.0.5] [22,2222] -> $HOME_NET any (msg:"SSH from spec
 - `tls.*` → inspect TLS metadata (e.g., `tls.sni; content:"bad.com";`)  
 - `threshold` → rate limiting alerts  
 - `classtype` → classify type of alert  
-- `priority` → severity (1=high, 3=low)  
+- `priority` → severity (1=high, 3=low)
+- `MANY MORE PARAMETERS ARE THERE WHICH WILL BE DISCUSSED LATER`
 
 ---
 
