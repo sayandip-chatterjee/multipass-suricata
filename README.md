@@ -13,6 +13,8 @@ This repository provides **Python-based automation script** to deploy and config
 - [📦 Installation & Usage](#-installation--usage)
 - [📜 Suricata Rules Breakdown](#-suricata-rules-breakdown)
 
+---
+
 ## 🖥️ About Suricata and Multipass  
 
 **[Suricata](https://suricata.io/)** is a high-performance, open-source **Intrusion Detection and Prevention System (IDS/IPS)** capable of:  
