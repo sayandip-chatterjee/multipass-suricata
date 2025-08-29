@@ -104,7 +104,13 @@ alert tcp [192.168.1.10,10.0.0.5] [22,2222] -> $HOME_NET any (msg:"SSH from spec
 - `threshold` → rate limiting alerts  
 - `classtype` → classify type of alert  
 - `priority` → severity (1=high, 3=low)
-- `MANY MORE PARAMETERS ARE THERE WHICH WILL BE DISCUSSED LATER`
+<details>
+  <summary>📑 Detailed Suricata Rule Options Cheat Sheet</summary>
+
+See full reference in [suricata-rule-options-cheat-sheet.md](./suricata-rule-options-cheat-sheet.md).
+
+</details>
+
 
 ---
 
