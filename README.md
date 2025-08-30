@@ -12,6 +12,7 @@ This repository provides **Python-based automation script** to deploy and config
 - [🛠️ Requirements](#️-requirements)
 - [📦 Installation & Usage](#-installation--usage)
 - [📜 Suricata Rules Breakdown](#-suricata-rules-breakdown)
+- [🧹 Cleanup](#-cleanup)
 
 ---
 
@@ -109,6 +110,22 @@ ADDITIONAL NOTES:
 See full reference in 
 - [suricata-rules-guide.md](./suricata-rules-guide.md).
   - [suricata-rule-options-cheat-sheet.md](./suricata-rule-options-cheat-sheet.md).
+ 
+---
+
+## 🧹 Cleanup
+
+```bash
+multipass list
+multipass delete <NAME>
+multipass purge
+```
+
+In case you have accidentally deleted and not purged yet
+```
+multipass list
+multipass recover <NAME>
+```
   
 
 
